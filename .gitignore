@@ -1,8 +1,7 @@
 # resources file
 resources.py 
 
-# test directories and files 
-Test*
+# test directories
 repos* 
 
 # Byte-compiled / optimized / DLL files
