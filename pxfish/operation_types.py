@@ -4,23 +4,58 @@ Utilities for operation types.
 
 class OperationType():
     # Operation Type has a category and a name
-    # Get OperationType aq.OperationType.where("category": category, "name": operation_type})
-    # OpType has files associated -- protocol.rb etc. and a json file
+    def get(aq, path, category, operation_type): # get form database 
+        operation_type = aq.OperationType.where("category": category, "name": operation_type})
+
+    def pull(operation_type):
+        pass # Pull singular OT
+   
+    def write(): # write operation type to file
+        pass
+
+    def write_json(): # write json data to file 
+        pass 
+
+    def create():
+        # create code objects 
+        pass
+
+    def select():
+        pass
+
+    def push():
+        pass
+        # OpType has files associated -- protocol.rb etc. and a json file
     # returns a single operation type instance 
-    pass
 
 class Library():
     # library has a category and a name
     # Library has source.rb and a json file
     # returns a single library instance 
-    def get(aq, path, category, library #as in library name):
+    def get(aq, path, category, library # Find in Database 
         library = Library aq.Library.where("category": category, "name": library})
 
     def pull():
-        # for each library you want to retrieve -- so you're making an instance for each one you want to retrieve then calling pull/write?
-        write_library(path, library)
+        # for each library you want to retrieve 
+        # so you're making an instance for each one you want to retrieve then calling pull/write?
+        write(path, library)
         # write_code and write library json file 
 
+    def write():
+        # write library to file 
+        pass
+
+    def write_json():
+        pass
+
+    def select():
+        pass 
+
+    def push():
+        pass 
+
+    def create():
+        pass
 # Category has operations_types and/or libraries 
 
 # get a category 
