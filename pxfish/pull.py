@@ -198,10 +198,13 @@ def write_operation_type(path, operation_type):
     """
     logging.info("writing operation type {}".format(operation_type.name))
 
+    # Move this into it's own funciton -- it's the same for libraries and optypes
     category_path = create_named_path(path, operation_type.category)
     makedirectory(category_path)
+   # replace with generica create path function  
     path = create_operation_path(category_path, operation_type.name)
     makedirectory(path)
+
     code_names = operation_type_code_names()
 
     for name in code_names:

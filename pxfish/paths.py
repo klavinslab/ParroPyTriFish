@@ -49,6 +49,26 @@ def create_named_path(path, name):
     return os.path.join(path, simplename(name))
 
 
+def create_file_path(category_path, entity_name, file_name):
+    """
+    Create a path for a library or operation type within the directory for a category.
+
+    Note: does not create the directory.
+
+    Arguments:
+      category_path (string): the path for the category
+      entity_name (string): the name of the library or operation type
+      file_name: libaries or operation_types
+
+    Returns:
+      string: the path of the library or operation_type 
+     """
+    return create_named_path(
+        os.path.join(category_path, file_name),
+        entity_name
+    )
+
+
 def create_library_path(category_path, library_name):
     """
     Create a path for a library within the directory for a category.
