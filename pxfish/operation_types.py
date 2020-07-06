@@ -3,18 +3,25 @@ Utilities for operation types.
 """
 
 class AbstractEntity():
-    #what code does the get functions have in common?
+    # what code does the get functions have in common?
     # Pulling: get functions (get from db), write functions (write to disk)
     # Pushing: find (select) files from disk, create code objects, push code objects 
     # Create: create op type, create code objects, push
     def create_path():
-        category_path = create_named_path(path, entity_type.category)
+        category_path = os.path.join(path, entity_type.category)
         makedirectory(category_path)
         # this should be overridden to make correct path -- library or ot
-        path = create_named_path(
+        path = os.path.join(
                 os.path.join(category_path, 'operation types' or 'libraries'
                 ), entity_type.name)
+    
+    def simplename(name):
+        return re.sub(r'\W|^(?=\d)', '_', name).lower()
 
+    def makedirectory(directory_name):
+        if not os.path.exists(directory_name):
+            os.makedirs(directory_name)
+    
     def get():
         pass 
 
@@ -41,17 +48,36 @@ class AbstractEntity():
 
     def push():
         pass
-        #push files
 
+    path = os.path.normpath(args.directory)
+    makedirectory(path)
+
+
+def create_file_path(category_path, entity_name, file_name):
+    return create_named_path(
+        os.path.join(category_path, file_name),
+        entity_name
+    )
+def create_library_path(category_path, library_name):
+    return create_named_path(
+        os.path.join(category_path, 'libraries'),
+        library_name
+    )
 
 class OperationType(AbstractEntity):
     # Operation Type has a category and a name
-    def create_path(): # specifics for OT path
-        pass
-    
+    # CreateNamedPath returns os.path.join(path, simplename(name)) first for simplename(cat), then simplename(ot)
+    def create_category_path(path): # path is the directory path ~/arg.dirname created in script specifics for OT path
+        category_path = os.path.join(path, simplename(category_name))  # name here is the simple name cat_ot 
+        makedirectory(category_path)
+        
+    def create_named_path()
+        path = os.path.join(category_path, 'operation_types')
+        op_type_path = os.path.join(path, operation_type_name) 
+        makedirectory(op_type_path)
+
     def get(aq, path, category, operation_type): # get from database 
-        # am I just making a double of what's happening in Trident?
-        #operation_type = aq.OperationType.where("category": category, "name": operation_type})
+        # operation_type = aq.OperationType.where("category": category, "name": operation_type})
         pass
 
     def pull():
@@ -101,7 +127,12 @@ class Library(AbstractEntity):
         # dirname/catname/libraries/library_name
         pass
     
-    def get(aq, path, category, library):
+    def create_named_path()
+        path = os.path.join(category_path, 'operation_types')
+        op_type_path = os.path.join(path, operation_type_name) 
+        makedirectory(op_type_path)
+    
+    def get():
        # library = Library aq.Library.where("category": category, "name": library})
         pass
 
