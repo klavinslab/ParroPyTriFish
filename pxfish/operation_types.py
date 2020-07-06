@@ -7,6 +7,16 @@ class AbstractEntity():
     # Pulling: get functions (get from db), write functions (write to disk)
     # Pushing: find (select) files from disk, create code objects, push code objects 
     # Create: create op type, create code objects, push
+    def __init__(self, aq, path, category, name):
+       self.aq = aq
+       self.path = path
+       self.category = category
+       self.name = name
+
+    def create_category_path(path): # path is the directory path ~/arg.dirname created in script specifics for OT path
+        category_path = os.path.join(path, simplename(category_name))  # name here is the simple name cat_ot 
+        makedirectory(category_path)
+        
     def create_path():
         category_path = os.path.join(path, entity_type.category)
         makedirectory(category_path)
@@ -53,24 +63,11 @@ class AbstractEntity():
     makedirectory(path)
 
 
-def create_file_path(category_path, entity_name, file_name):
-    return create_named_path(
-        os.path.join(category_path, file_name),
-        entity_name
-    )
-def create_library_path(category_path, library_name):
-    return create_named_path(
-        os.path.join(category_path, 'libraries'),
-        library_name
-    )
-
 class OperationType(AbstractEntity):
-    # Operation Type has a category and a name
     # CreateNamedPath returns os.path.join(path, simplename(name)) first for simplename(cat), then simplename(ot)
-    def create_category_path(path): # path is the directory path ~/arg.dirname created in script specifics for OT path
-        category_path = os.path.join(path, simplename(category_name))  # name here is the simple name cat_ot 
-        makedirectory(category_path)
-        
+    def __init__(self):
+        self.classification = "operation_type"
+
     def create_named_path()
         path = os.path.join(category_path, 'operation_types')
         op_type_path = os.path.join(path, operation_type_name) 
@@ -123,14 +120,12 @@ class OperationType(AbstractEntity):
 
 class Library(AbstractEntity):
     
-    def create_path():
-        # dirname/catname/libraries/library_name
-        pass
     
     def create_named_path()
-        path = os.path.join(category_path, 'operation_types')
-        op_type_path = os.path.join(path, operation_type_name) 
-        makedirectory(op_type_path)
+        # dirname/catname/libraries/library_name
+        path = os.path.join(category_path, 'libraries')
+        library_path = os.path.join(path, operation_type_name) 
+        makedirectory(library_path)
     
     def get():
        # library = Library aq.Library.where("category": category, "name": library})
@@ -166,15 +161,21 @@ class Library(AbstractEntity):
 
 
 class Category():
-#   Has operation types and libraries 
-#    operation_types = aq.OperationType.where({"category": category})
-#    libraries = aq.Library.where({"category": category})
+# Get everything in a category -- create instances of each and add to set, call write -- or whatever the function is  
+    # Or maybe I don't need the sets here -- because it's just writing the files
+    def __init__(self, name):
+        self.name = name
+        self.operation_types = []
+        self.libraries = []
 #    pull(path, operation_types=operation_types, libraries=libraries)
     def get():
-        pass
+        operation_types = aq.OperationType.where({"category": category})
+        libraries = aq.Library.where({"category": category})
+    # for ot in op_type, ot = OperationType() -- pull what's needed ot.pull() 
 
-class All():
-    # All has category or categories 
+
+class Directory():
+    # Directory has category or categories, categories have ots and libraries, ots and libraries have code objects
     def get_all():
         # retrieve all op types and libraries
         operation_types = aq.OperationType.all()
@@ -184,7 +185,6 @@ class All():
             operation_type = OperationType()
             operation_type.pull()
         # make OpType instance, call write on that instance
-        # but how does my optype differ from trident op type?
         # Should I be pulling out just the relevant info that we want -- the code objects?
 
         for library in libraries:
@@ -192,11 +192,3 @@ class All():
             library = Library()
             library.pull() 
 
-
-def create_file_structure(path, entity_type):
-    category_path = create_named_path(path, entity_type.category)
-    makedirectory(category_path)
-    path = create_named_path(
-            os.path.join(category_path, 'operation types' or 'libraries'
-            ), entity_type.name)
-    makedirectory(path)
