@@ -1,18 +1,72 @@
 """
 Utilities for operation types.
 """
-# e.g. pulling one library -> call get_library or pull_library function -- or call a general get function with library or op type as an argument?
-# in that function, make new, then go through the methods?
-class OperationType():
+
+class AbstractEntity():
+    #what code does the get functions have in common?
+    # Pulling: get functions (get from db), write functions (write to disk)
+    # Pushing: find (select) files from disk, create code objects, push code objects 
+    # Create: create op type, create code objects, push
+    def create_path():
+        category_path = create_named_path(path, entity_type.category)
+        makedirectory(category_path)
+        # this should be overridden to make correct path -- library or ot
+        path = create_named_path(
+                os.path.join(category_path, 'operation types' or 'libraries'
+                ), entity_type.name)
+
+    def get():
+        pass 
+
+    def pull():
+        pass
+
+    def get_code_file_names():
+        pass
+
+    def write_code_objects():
+        pass
+
+    def write_json_defintion():
+        pass
+
+    def create(): # create new ot
+        pass
+
+    def select(): # ot to push 
+        pass
+
+    def create_code_objects(): # create files to push 
+        pass
+
+    def push():
+        pass
+        #push files
+
+
+class OperationType(AbstractEntity):
     # Operation Type has a category and a name
-    def get(aq, path, category, operation_type): # get form database 
+    def create_path(): # specifics for OT path
+        pass
+    
+    def get(aq, path, category, operation_type): # get from database 
+        # am I just making a double of what's happening in Trident?
         #operation_type = aq.OperationType.where("category": category, "name": operation_type})
         pass
 
-    def write_code_objects(): # write operation type to file
-        pass
+    def pull():
+        pass # calls write code objects and write json 
 
-    def write_json(): # write json data to file 
+
+    def get_code_file_names(): # get all the files to write -- default should be protocol
+        return ['protocol', 'precondition', 'cost_model', 'documentation', 'test']
+
+    def write_code_objects(): # write operation types to disk 
+        file_path = os.path.join(path, file_name)
+        with open(file_path, 'w') as file:
+            file.write(code_object.content)
+
+    def write_json_defintion(): # write json data to file 
         pass 
 
     def create(): # create new ot
@@ -21,73 +75,93 @@ class OperationType():
     def select(): # ot to push 
         pass
 
-    def create_code_objects(): # create files 
+    def create_code_objects(): # create files to push 
         pass
 
-#library = Library()
-#library.get()
-#library.write()
-#library.write_json()
+    def push():
+        pass
+        #push files
 
-class Library():
-    # library has a category and a name
-    # Library has source.rb and a json file
-    # write_library -- currently does a bunch of directory/path stuff
-    # Find in Database  
+    #ot_ser = {}
+    #ot_ser["id"] = operation_type.id
+    #ot_ser["name"] = operation_type.name
+    #ot_ser["parent_class"] = "OperationType"
+    #ot_ser["category"] = operation_type.category
+    #ot_ser["inputs"] = field_type_list(operation_type.field_types, 'input')
+    #ot_ser["outputs"] = field_type_list(operation_type.field_types, 'output')
+    #ot_ser["on_the_fly"] = operation_type.on_the_fly
+    #ot_ser["user_id"] = operation_type.protocol.user_id
+
+    #with open(file_path, 'w') as file:
+    #    file.write(json.dumps(ot_ser, indent=2))
+
+class Library(AbstractEntity):
+    
+    def create_path():
+        # dirname/catname/libraries/library_name
+        pass
+    
     def get(aq, path, category, library):
        # library = Library aq.Library.where("category": category, "name": library})
         pass
 
-    def write_code_object(): # Write source.rb
+    def pull():
+        pass
+
+    def get_code_file_names():
+        return ['source']
+
+    def write_code_objects(): # Write source.rb
         file_name = "source.rb" # For libraries this will be the only file name 
         code_object = self.code("source")
         file_path = os.path.join(path, file_name)
         with open(file_path, 'w') as file:
             file.write(code_object.content)
 
-    def write_json():
+    def write_json_defintion():
+        pass
+
+    def create(): # Create library
         pass
 
     def select(): # Find library to push
         pass 
 
-    def create(): # Create library
-        pass
-
     def create_code_objects(): # code with name=source in db  
         pass
+    
+    def push():
+        pass
 
 
-# Category has operations_types and/or libraries 
 class Category():
-    pass
-
-
-# get a category 
+#   Has operation types and libraries 
 #    operation_types = aq.OperationType.where({"category": category})
 #    libraries = aq.Library.where({"category": category})
 #    pull(path, operation_types=operation_types, libraries=libraries)
+    def get():
+        pass
 
-# Get all -- everything in Aquarium Instance
-# All has category or categories 
-# Operation_types = aq.OperationType.all()
-    # libraries = aq.Library.all()
-    # pull(path, operation_types, libraries)
+class All():
+    # All has category or categories 
+    def get_all():
+        # retrieve all op types and libraries
+        operation_types = aq.OperationType.all()
+        libraries = aq.Library.all()
 
-# pull calls write optype and write library 
-# these write each associate filed (for library this is just source, for ot its the list)
-# then the write functions call write json 
-# Default should be just the protocol 
-class AbstractEntity():
-    #what code does the get functions have in common?
-    #right now things are broken up by push/pull/create, but we want them broken up by library vs optype
-    # Pulling: get functions (get from db), write functions (write to disk)
-    # Pushing: find (select) files from disk, create code objects, push code objects 
-    # Create: create op type, create code objects, push
-    pass
+        for operation_type in operation_types:
+            operation_type = OperationType()
+            operation_type.pull()
+        # make OpType instance, call write on that instance
+        # but how does my optype differ from trident op type?
+        # Should I be pulling out just the relevant info that we want -- the code objects?
+
+        for library in libraries:
+            # make Library instance, call write on that instance
+            library = Library()
+            library.pull() 
 
 
-# Not part of a class? But make one function that calls all the make directory stuff 
 def create_file_structure(path, entity_type):
     category_path = create_named_path(path, entity_type.category)
     makedirectory(category_path)
@@ -95,7 +169,3 @@ def create_file_structure(path, entity_type):
             os.path.join(category_path, 'operation types' or 'libraries'
             ), entity_type.name)
     makedirectory(path)
-
-
-def operation_type_code_names():
-    return ['protocol', 'precondition', 'cost_model', 'documentation', 'test']
