@@ -18,9 +18,8 @@ class AbstractEntity():
         makedirectory(category_path)
         
     def create_path():
-        category_path = os.path.join(path, entity_type.category)
+        category_path = create_category_path()
         makedirectory(category_path)
-        # this should be overridden to make correct path -- library or ot
         path = os.path.join(
                 os.path.join(category_path, 'operation types' or 'libraries'
                 ), entity_type.name)
@@ -59,13 +58,10 @@ class AbstractEntity():
     def push():
         pass
 
-    path = os.path.normpath(args.directory)
-    makedirectory(path)
-
-
 class OperationType(AbstractEntity):
     # CreateNamedPath returns os.path.join(path, simplename(name)) first for simplename(cat), then simplename(ot)
-    def __init__(self):
+    def __init__(self, aq, path, category, name):
+        super().__init__(aq, path, category, name)
         self.classification = "operation_type"
 
     def create_named_path()
@@ -79,7 +75,6 @@ class OperationType(AbstractEntity):
 
     def pull():
         pass # calls write code objects and write json 
-
 
     def get_code_file_names(): # get all the files to write -- default should be protocol
         return ['protocol', 'precondition', 'cost_model', 'documentation', 'test']
@@ -119,12 +114,15 @@ class OperationType(AbstractEntity):
     #    file.write(json.dumps(ot_ser, indent=2))
 
 class Library(AbstractEntity):
-    
+   
+    def __init__(self, aq, path, category, name):
+        super().__init__(aq, path, category, name)
+        self.grouping = "libraries"
     
     def create_named_path()
         # dirname/catname/libraries/library_name
         path = os.path.join(category_path, 'libraries')
-        library_path = os.path.join(path, operation_type_name) 
+        library_path = os.path.join(path, self.name) 
         makedirectory(library_path)
     
     def get():
