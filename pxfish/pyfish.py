@@ -66,7 +66,6 @@ def main():
     )
 
     args = parser.parse_args()
-
     aq = open_aquarium_session()
 
     path = os.path.normpath(args.directory)

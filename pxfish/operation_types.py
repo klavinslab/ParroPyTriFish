@@ -3,7 +3,6 @@ Utilities for operation types.
 """
 
 class AbstractEntity():
-    # what code does the get functions have in common?
     # Pulling: get functions (get from db), write functions (write to disk)
     # Pushing: find (select) files from disk, create code objects, push code objects 
     # Create: create op type, create code objects, push
@@ -20,9 +19,9 @@ class AbstractEntity():
     def create_path():
         category_path = create_category_path()
         makedirectory(category_path)
-        path = os.path.join(
-                os.path.join(category_path, 'operation types' or 'libraries'
-                ), entity_type.name)
+        #path = os.path.join(
+        #        os.path.join(category_path, 'operation types' or 'libraries'
+        #        ), entity_type.name)
     
     def simplename(name):
         return re.sub(r'\W|^(?=\d)', '_', name).lower()
@@ -58,13 +57,14 @@ class AbstractEntity():
     def push():
         pass
 
+
 class OperationType(AbstractEntity):
     # CreateNamedPath returns os.path.join(path, simplename(name)) first for simplename(cat), then simplename(ot)
     def __init__(self, aq, path, category, name):
         super().__init__(aq, path, category, name)
         self.classification = "operation_type"
 
-    def create_named_path()
+    def create_path():
         path = os.path.join(category_path, 'operation_types')
         op_type_path = os.path.join(path, operation_type_name) 
         makedirectory(op_type_path)
@@ -100,18 +100,6 @@ class OperationType(AbstractEntity):
         pass
         #push files
 
-    #ot_ser = {}
-    #ot_ser["id"] = operation_type.id
-    #ot_ser["name"] = operation_type.name
-    #ot_ser["parent_class"] = "OperationType"
-    #ot_ser["category"] = operation_type.category
-    #ot_ser["inputs"] = field_type_list(operation_type.field_types, 'input')
-    #ot_ser["outputs"] = field_type_list(operation_type.field_types, 'output')
-    #ot_ser["on_the_fly"] = operation_type.on_the_fly
-    #ot_ser["user_id"] = operation_type.protocol.user_id
-
-    #with open(file_path, 'w') as file:
-    #    file.write(json.dumps(ot_ser, indent=2))
 
 class Library(AbstractEntity):
    
@@ -119,7 +107,7 @@ class Library(AbstractEntity):
         super().__init__(aq, path, category, name)
         self.grouping = "libraries"
     
-    def create_named_path()
+    def create_path():
         # dirname/catname/libraries/library_name
         path = os.path.join(category_path, 'libraries')
         library_path = os.path.join(path, self.name) 
@@ -190,3 +178,6 @@ class Directory():
             library = Library()
             library.pull() 
 
+
+def operation_type_code_names():
+    return ['protocol', 'precondition', 'cost_model', 'documentation', 'test']
